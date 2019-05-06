@@ -1,3 +1,4 @@
+const path = require('path')
 
 module.exports = function (config) {
   config.set({
@@ -19,6 +20,9 @@ module.exports = function (config) {
       mode: 'development',
 
       resolve: {
+        alias: {
+          '@': path.resolve(__dirname, 'src')
+        }
       },
 
       module: {

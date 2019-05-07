@@ -19,6 +19,8 @@ export default class Vue {
     if (root) {
       root.appendChild(this.$el)
     }
+    
+    this.$options.mounted && this.$options.mounted.call(this.proxy)
 
     return this
   }

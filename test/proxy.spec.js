@@ -1,7 +1,7 @@
 import Vue from '@/main'
 
 describe('Vue proxy', function () {
-  it('proxy should vm.a = vm._data.a ', function () {
+  it('cb is called', function () {
     const vm = new Vue({
       data () {
         return {
@@ -9,6 +9,10 @@ describe('Vue proxy', function () {
         }
       }
     })
-    expect(vm.a).toEqual(2)
+    vm.$watch('a', (pre, val) => {
+      expect(pre).toEqual(2)
+      expect(val).toEqual(3)
+    })
+    vm.a = 3
   })
 })

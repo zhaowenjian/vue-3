@@ -4,13 +4,17 @@ export function createElement (tag, data, children) {
   return new VNode(tag, data, children)
 }
 
-export function createEl (vnode) {
+export function createEl (vnode, vm) {
   const {tag, data, children} = vnode
   const el = document.createElement(tag)
 
   if (data) {
+    const {listeners = {}} = data
     for (let key in data) {
       el.setAttribute(key, data[key])
+    }
+    for (let key in listeners) {
+      el.addEventListener(key, listeners[key])
     }
   }
 

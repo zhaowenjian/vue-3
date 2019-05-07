@@ -12,7 +12,9 @@ export default class Vue {
   }
 
   $mount (root) {
-    const vnode = this.$options.render.call(this.proxy, createElement)
+    const {render, mounted} = this.$options
+
+    const vnode = render.call(this.proxy, createElement)
 
     this.$el = createEl(vnode)
 
@@ -20,7 +22,7 @@ export default class Vue {
       root.appendChild(this.$el)
     }
     
-    this.$options.mounted && this.$options.mounted.call(this.proxy)
+    mounted && mounted.call(this.proxy)
 
     return this
   }

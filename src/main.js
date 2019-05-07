@@ -1,3 +1,4 @@
+import {createElement, createEl} from './render'
 
 export default class Vue {
   constructor (options) {
@@ -8,7 +9,18 @@ export default class Vue {
     const proxy = this.initDataProxy()
 
     return proxy
+  }
 
+  $mount (root) {
+    const vnode = this.$options.render.call(this, createElement)
+
+    this.$el = createEl(vnode)
+
+    if (root) {
+      root.appendChild(this.$el)
+    }
+
+    return this
   }
 
   initWatch () {
@@ -25,7 +37,7 @@ export default class Vue {
   }
 
   initDataProxy () {
-    const data = this.$options.data ? this.$options.data() : {}
+    const data = this.$data = this.$options.data ? this.$options.data() : {}
     return new Proxy(this, {
       get: (_, key, receiver) => {
         if (key in _) return _[key]

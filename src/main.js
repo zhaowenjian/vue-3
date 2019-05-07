@@ -6,13 +6,13 @@ export default class Vue {
     
     this.initWatch()
 
-    const proxy = this.initDataProxy()
+    this.proxy = this.initDataProxy()
 
-    return proxy
+    return this.proxy
   }
 
   $mount (root) {
-    const vnode = this.$options.render.call(this, createElement)
+    const vnode = this.$options.render.call(this.proxy, createElement)
 
     this.$el = createEl(vnode)
 
@@ -37,16 +37,22 @@ export default class Vue {
   }
 
   initDataProxy () {
-    const data = this.$data = this.$options.data ? this.$options.data() : {}
+    const data = this.$options.data ? this.$options.data() : {}
+    const methods = this.$options.methods || {}
     return new Proxy(this, {
       get: (_, key, receiver) => {
         if (key in _) return _[key]
+        if (key in methods) return methods[key].bind(this.proxy)
         return data[key]
       },
       set: (_, key, val, receiver) => {
-        const pre = data[key]
+        const pre = data[key] || this[key]
         if (pre === val) return
-        data[key] = val
+        if (key in data) {
+          data[key] = val
+        } else {
+          this[key] = val
+        }
         this.notifyChange(key, pre, val)
         return true
       }

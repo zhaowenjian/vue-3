@@ -11,6 +11,23 @@ export default class Vue {
     return this.proxy
   }
 
+  update () {
+    const parent = this.$el.parentNode
+
+    const vnode = this.$options.render.call(this.proxy, createElement)
+    const temp = this.$el
+    this.$el = this.patch(null, vnode)
+
+    if (parent) {
+      parent.removeChild(temp)
+      parent.appendChild(this.$el)
+    }
+  }
+
+  patch (oldVnode, newVnode) {
+    return createEl(newVnode)
+  }
+
   $mount (root) {
     const {render, mounted} = this.$options
 
@@ -45,19 +62,22 @@ export default class Vue {
     const methods = this.$options.methods || {}
     return new Proxy(this, {
       get: (_, key, receiver) => {
-        if (key in _) return _[key]
+        if (key in data) {
+          this.$watch(key, this.update.bind(this))
+          return data[key]
+        }
         if (key in methods) return methods[key].bind(this.proxy)
-        return data[key]
+        return this[key]
       },
       set: (_, key, val, receiver) => {
         const pre = data[key] || this[key]
         if (pre === val) return
         if (key in data) {
           data[key] = val
+          this.notifyChange(key, pre, val)
         } else {
           this[key] = val
         }
-        this.notifyChange(key, pre, val)
         return true
       }
     })

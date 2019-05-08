@@ -26,5 +26,6 @@ describe('vnode render', () => {
     expect(el.tagName).toEqual('BUTTON')
     el.click()
     expect(cb).toHaveBeenCalled()
+    document.body.removeChild(vm.$el)
   })
 })

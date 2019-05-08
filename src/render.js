@@ -7,6 +7,7 @@ export function createElement (tag, data, children) {
 export function createEl (vnode, vm) {
   const {tag, data, children} = vnode
   const el = document.createElement(tag)
+  el.__vue__ = vm
 
   if (data) {
     const {listeners = {}} = data

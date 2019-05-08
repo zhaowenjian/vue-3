@@ -12,7 +12,7 @@ export default class Vue {
   }
 
   update () {
-    const parent = this.$el.parentNode
+    const parent = this.$el.parentElement
 
     const vnode = this.$options.render.call(this.proxy, createElement)
     const temp = this.$el
@@ -25,7 +25,7 @@ export default class Vue {
   }
 
   patch (oldVnode, newVnode) {
-    return createEl(newVnode)
+    return createEl(newVnode, this)
   }
 
   $mount (root) {
@@ -36,7 +36,9 @@ export default class Vue {
     this.$el = createEl(vnode)
 
     if (root) {
-      root.appendChild(this.$el)
+      const parent = root.parentElement
+      parent.removeChild(root)
+      parent.appendChild(this.$el)
     }
     
     mounted && mounted.call(this.proxy)
@@ -71,7 +73,7 @@ export default class Vue {
       },
       set: (_, key, val, receiver) => {
         const pre = data[key] || this[key]
-        if (pre === val) return
+        if (pre === val) return true
         if (key in data) {
           data[key] = val
           this.notifyChange(key, pre, val)

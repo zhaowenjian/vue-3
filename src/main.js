@@ -65,8 +65,7 @@ export default class Vue {
     return new Proxy(this, {
       get: (_, key, receiver) => {
         if (key in data) {
-          this.$watch(key, this.update.bind(this))
-          return data[key]
+          return this.createDataProxyHandler().get(data, key)
         }
         if (key in methods) return methods[key].bind(this.proxy)
         return this[key]
@@ -75,13 +74,47 @@ export default class Vue {
         const pre = data[key] || this[key]
         if (pre === val) return true
         if (key in data) {
-          data[key] = val
-          this.notifyChange(key, pre, val)
+          return this.createDataProxyHandler().set(data, key, val)
         } else {
           this[key] = val
         }
         return true
       }
     })
+  }
+
+  createDataProxyHandler (path) {
+    return {
+      get: (_, key) => {
+        const fullpath = path ? path + '.' + key : key
+
+        this.collect(fullpath)
+
+        if (typeof _[key] === 'object' && _[key] !== null) {
+          return new Proxy(_[key], this.createDataProxyHandler(fullpath))
+        } else {
+          return _[key]
+        }
+      },
+
+      set: (_, key, val) => {
+        const fullpath = path ? path + '.' + key : key
+
+        const pre = _[key]
+        _[key] = val
+
+        this.notifyChange(fullpath, pre, val)
+
+        return true
+      }
+    }
+  }
+
+  collect (fullpath) {
+    this.collected = this.collected || {}
+    if (!this.collected[fullpath]) {
+      this.$watch(fullpath, this.update.bind(this))
+      this.collected[fullpath] = true
+    }
   }
 }

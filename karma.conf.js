@@ -28,7 +28,12 @@ module.exports = function (config) {
       module: {
         rules: [
           {
-            test: /\.js$/,
+            test: /\.js[x]?$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/
+          },
+          {
+            test: /\.jsx$/,
             loader: 'babel-loader',
             exclude: /node_modules/
           }

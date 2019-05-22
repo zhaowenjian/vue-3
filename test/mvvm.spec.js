@@ -21,7 +21,6 @@ describe('MVVM', () => {
     vm.text = 'hello'
     
     expect(vm.$el.textContent).toBe('hello')
-
     document.body.removeChild(vm.$el)
   })
 })

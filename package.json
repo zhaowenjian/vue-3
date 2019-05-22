@@ -12,15 +12,17 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "babel-loader": "^8.0.5",
+    "global": "^4.3.2",
     "jasmine-core": "^3.4.0",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
+    "karma-cli": "^2.0.0",
     "karma-jasmine": "^2.0.1",
     "karma-webpack": "^3.0.5",
-    "webpack": "^4.30.0",
-    "global": "^4.3.2",
-    "karma-cli": "^2.0.0"
+    "webpack": "^4.30.0"
   },
   "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }

@@ -18,7 +18,6 @@ export function createEl (vnode, vm) {
       el.addEventListener(key, listeners[key])
     }
   }
-
   if (isStringNumber(children)) {
     el.textContent = children
   } else if (Array.isArray(children)) {

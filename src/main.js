@@ -90,6 +90,15 @@ export default class Vue {
 
         this.notifyChange(fullPath, pre, val)
         return true
+      },
+      deleteProperty: (data, key) => {
+        if (key in data) {
+          const fullPath = path ? path + '.' + key : key
+          const pre = data[key]
+          delete data[key]
+          this.notifyChange(fullPath, pre)
+        }
+        return true
       }
     }
 

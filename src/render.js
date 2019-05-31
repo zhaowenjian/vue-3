@@ -10,13 +10,14 @@ export function createEl (vnode, vm) {
   el.__vue__ = vm
 
   if (data) {
-    const {listeners = {}} = data
-    for (let key in data) {
-      el.setAttribute(key, data[key])
+    const {on = {}, attrs = {}, className} = data
+    for (let key in attrs) {
+      el.setAttribute(key, attrs[key])
     }
-    for (let key in listeners) {
-      el.addEventListener(key, listeners[key])
+    for (let key in on) {
+      el.addEventListener(key, on[key])
     }
+    className && el.setAttribute('class', className)
   }
   if (isStringNumber(children)) {
     el.textContent = children

@@ -6,16 +6,33 @@ export default class Vue {
 
     this.initWatch()
 
+    this.initProps()
+
     const proxy = this.proxy = this.initDataProxy()
 
     return proxy
   }
 
+  initProps () {
+    const {props, propsData} = this.$options
+    this._props = {}
+
+    if (!propsData || !props.length) return
+
+    props.forEach((prop) => {
+      this._props[prop] = propsData[prop]
+    })
+  }
+
   initDataProxy () {
     const data = this.$data = this.$options.data ? this.$options.data() : {}
     const methods = this.$methods = this.$options.methods || {}
+    const props = this._props || {}
     return new Proxy(this, {
       get: (_, key) => {
+        if (key in props) {
+          return this.createProxyHandler().get(props, key)
+        }
         if (key in data) {
           return this.createProxyHandler().get(data, key)
         }
@@ -24,6 +41,10 @@ export default class Vue {
       },
       set: (_, key, val) => {
         const pre = data[key] || this[key]
+
+        if (key in props) {
+          return this.createProxyHandler().set(props, key, val)
+        }
 
         if (key in data) {
           return this.createProxyHandler().set(data, key, val)
@@ -37,16 +58,11 @@ export default class Vue {
   }
   
   $mount (root) {
-    const {render, mounted} = this.$options
+    this.$el = root
 
-    const vnode = render.call(this.proxy, createElement)
-    this.$el = createEl(vnode, this.proxy)
+    const {mounted} = this.$options
 
-    if (root) {
-      const parent = root.parentElement
-      parent.removeChild(root)
-      parent.appendChild(this.$el)
-    }
+    this.update()
 
     mounted && mounted.call(this.proxy)
 
@@ -59,7 +75,7 @@ export default class Vue {
 
   update () {
     const {render} = this.$options
-    const parentNode = this.$el.parentElement
+    const parentNode = (this.$el || {}).parentElement
     const vnode = render.call(this.proxy, createElement)
     const temp = this.$el
     this.$el = this.patch(null, vnode)

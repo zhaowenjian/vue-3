@@ -10,7 +10,7 @@ describe('vnode render', () => {
       },
 
       render (h) {
-        return h('div', {class: 'test'}, this.text)
+        return h('div', {className: 'test'}, this.text)
       }
     }).$mount()
 

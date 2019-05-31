@@ -13,8 +13,8 @@ describe('vnode render', () => {
 
       render (h) {
         return h('button', {
-          class: 'btn',
-          listeners: {
+          className: 'btn',
+          on: {
             click: cb
           }
         }, this.text)

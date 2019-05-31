@@ -76,7 +76,7 @@ export default class Vue {
   update () {
     const {render} = this.$options
     const parentNode = (this.$el || {}).parentElement
-    const vnode = render.call(this.proxy, createElement)
+    const vnode = render.call(this.proxy, createElement.bind(this))
     const temp = this.$el
     this.$el = this.patch(null, vnode)
     if (parentNode) {

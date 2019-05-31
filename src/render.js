@@ -1,11 +1,23 @@
 import VNode from './vnode'
+import Vue from '@/main'
 
 export function createElement (tag, data, children) {
+  const components = this.$options.components || {}
+  console.log('components', components)
+  if (tag in components) {
+    return new VNode(tag, data, children, components[tag])
+  }
   return new VNode(tag, data, children)
 }
 
 export function createEl (vnode, vm) {
-  const {tag, data, children} = vnode
+  const {tag, data, children, componentOptions} = vnode
+
+  if (componentOptions) {
+    const componentInstance = new Vue(Object.assign({}, componentOptions, {propsData: data.props})).$mount()
+    vnode.componentInstance = componentInstance
+    return componentInstance.$el
+  }
   const el = document.createElement(tag)
   el.__vue__ = vm
 

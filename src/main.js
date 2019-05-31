@@ -73,6 +73,12 @@ export default class Vue {
     return createEl(newVnode, this)
   }
 
+  $emit (...args) {
+    const [name, ...rest] = args
+    const cb = this._events[name]
+    cb && cb(...rest)
+  }
+
   update () {
     const {render} = this.$options
     const parentNode = (this.$el || {}).parentElement

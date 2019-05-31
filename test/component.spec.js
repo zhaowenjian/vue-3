@@ -57,4 +57,36 @@ describe('Mvvm components use', () => {
 
     expect(vm.$el.outerHTML).toEqual(`<p>world</p>`)
   })
+  
+  it('event & action', () => {
+    const cb = jasmine.createSpy('cb')
+
+    const vm = new Vue({
+      data () {
+        return {
+        }
+      },
+      components: {
+        'my-component': {
+          render (h) {
+            return h('div', {}, 'my-component')
+          },
+          mounted () {
+            this.$emit('coustom-event', {mounted: 'mounted'})
+          }
+        }
+      },
+      render (h) {
+        return h('my-component', {
+          on: {
+            'coustom-event': cb
+          }
+        })
+      }
+    }).$mount()
+
+    expect(cb).withContext(vm)
+
+    expect(cb).toHaveBeenCalledWith({mounted: 'mounted'})
+  })
 })

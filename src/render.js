@@ -14,8 +14,10 @@ export function createEl (vnode, vm) {
   const {tag, data, children, componentOptions} = vnode
 
   if (componentOptions) {
-    const componentInstance = new Vue(Object.assign({}, componentOptions, {propsData: data.props})).$mount()
+    const componentInstance = new Vue(Object.assign({}, componentOptions, {propsData: data.props}))
     vnode.componentInstance = componentInstance
+    componentInstance._events = (data || {}).on || {}
+    componentInstance.$mount()
     return componentInstance.$el
   }
   const el = document.createElement(tag)

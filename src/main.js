@@ -27,6 +27,7 @@ export default class Vue {
   initDataProxy () {
     const data = this.$data = this.$options.data ? this.$options.data() : {}
     const methods = this.$methods = this.$options.methods || {}
+    const computed = this.$options.computed || {}
     const props = this._props || {}
     return new Proxy(this, {
       get: (_, key) => {
@@ -35,6 +36,9 @@ export default class Vue {
         }
         if (key in data) {
           return this.createProxyHandler().get(data, key)
+        }
+        if (key in computed) {
+          return computed[key].call(this.proxy)
         }
         if (key in methods) return this.$methods[key].bind(this.proxy)
         return this[key]
@@ -62,7 +66,9 @@ export default class Vue {
 
     const {mounted} = this.$options
 
-    this.update()
+    this._firstRendering = true
+    this.update(true)
+    this._firstRendering = false
 
     mounted && mounted.call(this.proxy)
 
@@ -79,7 +85,7 @@ export default class Vue {
     cb && cb(...rest)
   }
 
-  update () {
+  update (firstRender) {
     const {render} = this.$options
     const parentNode = (this.$el || {}).parentElement
     const vnode = render.call(this.proxy, createElement.bind(this))
@@ -127,11 +133,8 @@ export default class Vue {
   }
 
   collect (fullPath) {
-    this.collected = this.collected || {}
-    if (!this.collected[fullPath]) {
-      this.$watch(fullPath, this.update.bind(this))
-      this.collected[fullPath] = true
-    }
+    if (!this._firstRendering) return
+    this.$watch(fullPath, this.update.bind(this))
   }
 
   notifyChange (key, pre, val) {

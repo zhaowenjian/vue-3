@@ -1,14 +1,16 @@
 import {createElement, createEl} from './render'
+import Watcher from './watcher'
 
 export default class Vue {
   constructor (options) {
     this.$options = options
 
-    this.initWatch()
-
     this.initProps()
 
+    this.initWatcher()
     const proxy = this.proxy = this.initDataProxy()
+ 
+    this.initWatch()
 
     return proxy
   }
@@ -133,8 +135,13 @@ export default class Vue {
   }
 
   collect (fullPath) {
-    if (!this._firstRendering) return
-    this.$watch(fullPath, this.update.bind(this))
+    if (this._firstRendering) {
+      this.$watch(fullPath, this.update.bind(this))
+    }
+
+    if (this._target) {
+      this.$watch(fullPath, this._target.update.bind(this._target))
+    }
   }
 
   notifyChange (key, pre, val) {
@@ -146,7 +153,22 @@ export default class Vue {
     this.watchChain[key].push(cb)
   }
 
-  initWatch () {
+  initWatcher () {
     this.watchChain = {}
+  }
+
+  initWatch () {
+    const {watch = {}, computed = {}} = this.$options
+    const data = this.$data
+
+    for (let key in watch) {
+      if (key in data) {
+        this.$watch(key, watch[key].bind(this.proxy))
+      } else if (key in computed) {
+        new Watcher(this.proxy, computed[key], watch[key])
+      } else {
+        throw(new Error('watch error'))
+      }
+    }
   }
 }

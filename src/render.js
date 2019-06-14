@@ -3,7 +3,6 @@ import Vue from '@/main'
 
 export function createElement (tag, data, children) {
   const components = this.$options.components || {}
-  console.log('components', components)
   if (tag in components) {
     return new VNode(tag, data, children, components[tag])
   }

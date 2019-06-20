@@ -13,13 +13,13 @@ describe('Watch support', () => {
       },
 
       computed: {
-        b () {
+        e () {
           return 2 * this.a
         }
       },
 
       watch: {
-        b (newVal, oldVal) {
+        e (newVal, oldVal) {
           comCb(newVal, oldVal)
         }
       },

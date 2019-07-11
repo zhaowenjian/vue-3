@@ -25,8 +25,11 @@ describe('Couputed support', () => {
     vm.a = 10
 
     expect(vm.b).toEqual(20)
+    
+    vm.$nextTick(() => {
+      expect(vm.$el.textContent).toEqual('20')
+    })
 
-    expect(vm.$el.textContent).toEqual('20')
   })
 
   it('chain', () => {
@@ -57,6 +60,8 @@ describe('Couputed support', () => {
 
     expect(vm.c).toEqual(13)
 
-    expect(vm.$el.textContent).toEqual('13')
+    vm.$nextTick(() => {
+      expect(vm.$el.textContent).toEqual('13')
+    })
   })
 })

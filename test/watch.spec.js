@@ -31,6 +31,8 @@ describe('Watch support', () => {
 
     vm.a = 2
 
-    expect(comCb).toHaveBeenCalledWith(2, 4)
+    setTimeout(() => {
+      expect(comCb).toHaveBeenCalledWith(2, 4)
+    })
   })
 })

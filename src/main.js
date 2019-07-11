@@ -1,11 +1,14 @@
 import {createElement, createEl} from './render'
-import {Watcher, ComputedWatcher} from './watcher'
+import {Watcher, ComputedWatcher, getWatcherId} from './watcher'
 import {createProxy, setTarget, clearTarget} from './proxy'
 import Dep from './Dep'
+import nextTick from './nextTick'
+import {queueWatcher} from './schedule'
 
 export default class Vue {
   constructor (options) {
-    this.$options = options
+    this.$options = options || {}
+    this.id = getWatcherId()
 
     this.initProps()
 
@@ -35,7 +38,7 @@ export default class Vue {
     const {mounted} = this.$options
 
     setTarget(this)
-    this.update()
+    this.run()
     clearTarget()
 
     mounted && mounted.call(this.proxy)
@@ -54,6 +57,11 @@ export default class Vue {
   }
 
   update () {
+    debugger
+    queueWatcher(this)
+  }
+
+  run () {
     const {render} = this.$options
     const parentNode = (this.$el || {}).parentElement
     const vnode = render.call(this.proxy, createElement.bind(this))
@@ -94,5 +102,9 @@ export default class Vue {
         throw(new Error('watch error'))
       }
     }
+  }
+
+  $nextTick (cb) {
+    return nextTick(cb, this.proxy)
   }
 }

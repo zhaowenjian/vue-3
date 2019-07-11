@@ -2197,6 +2197,13 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+heapdump@^0.3.14:
+  version "0.3.14"
+  resolved "http://jfrog.cloud.qiyi.domain:80/api/npm/npm/heapdump/-/heapdump-0.3.14.tgz#cd616c8f63855fd928eee8179ba462ce461c547d"
+  integrity sha1-zWFsj2OFX9ko7ugXm6RizkYcVH0=
+  dependencies:
+    nan "^2.13.2"
+
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/hmac-drbg/download/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
@@ -2911,6 +2918,11 @@ nan@^2.12.1:
   version "2.13.2"
   resolved "https://registry.npm.taobao.org/nan/download/nan-2.13.2.tgz#f51dc7ae66ba7d5d55e1e6d4d8092e802c9aefe7"
   integrity sha1-9R3Hrma6fV1V4ebU2AkugCya7+c=
+
+nan@^2.13.2:
+  version "2.14.0"
+  resolved "http://jfrog.cloud.qiyi.domain:80/api/npm/npm/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
+  integrity sha1-eBj3IgJ7JFmobwKV1DTR/CM2xSw=
 
 nanomatch@^1.2.9:
   version "1.2.13"

@@ -54,8 +54,9 @@ describe('Mvvm components use', () => {
     expect(vm.$el.outerHTML).toEqual(`<p>hello</p>`)
 
     vm.msg = 'world'
-
-    expect(vm.$el.outerHTML).toEqual(`<p>world</p>`)
+    setTimeout(() => {
+      expect(vm.$el.outerHTML).toEqual(`<p>world</p>`)
+    })
   })
   
   it('event & action', () => {
@@ -87,6 +88,8 @@ describe('Mvvm components use', () => {
 
     expect(cb).withContext(vm)
 
-    expect(cb).toHaveBeenCalledWith({mounted: 'mounted'})
+    setTimeout(() => {
+      expect(cb).toHaveBeenCalledWith({mounted: 'mounted'})
+    })
   })
 })

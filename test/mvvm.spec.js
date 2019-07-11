@@ -1,7 +1,7 @@
 import Vue from '@/main'
 
 describe('MVVM', () => {
-  it('mvvm use', () => {
+  it('mvvm use', (done) => {
     const vm = new Vue({
       data () {
         return {
@@ -20,8 +20,11 @@ describe('MVVM', () => {
 
     vm.text = 'hello'
     
-    expect(vm.$el.textContent).toBe('hello')
-    document.body.removeChild(vm.$el)
+    setTimeout(() => {
+      expect(vm.$el.textContent).toBe('hello')
+      done()
+      document.body.removeChild(vm.$el)
+    })
   })
 
   it('Add/Delete property', () => {
@@ -42,20 +45,27 @@ describe('MVVM', () => {
 
     expect(vm.a.b).toBe(0)
 
-    expect(vm.$el.textContent).toBe('0')
+    setTimeout(() => {
+      expect(vm.$el.textContent).toBe('0')
 
-    vm.a.b = 10
+      vm.a.b = 10
+      setTimeout(() => {
+        expect(vm.$el.textContent).toBe('10')
 
-    expect(vm.$el.textContent).toBe('10')
-    
-    delete vm.a.b
+        delete vm.a.b
 
-    expect(vm.a.b).toBe(undefined)
+        expect(vm.a.b).toBe(undefined)
 
-    expect(vm.$el.textContent).toBe('')
+        setTimeout(() => {
+          expect(vm.$el.textContent).toBe('')
+        })
+      })
+      
+    })
+
   })
   
-  it('Array setter/getter', () => {
+  it('Array setter/getter', (done) => {
     const vm = new Vue({
       data () {
         return {
@@ -68,11 +78,18 @@ describe('MVVM', () => {
     }).$mount()
 
     expect(vm.a[0]).toBe('hello')
-    expect(vm.$el.textContent).toBe('hello')
+    
+    setTimeout(() => {
+      expect(vm.$el.textContent).toBe('hello')
 
-    vm.a[0] = 'world'
+      vm.a[0] = 'world'
 
-    expect(vm.$el.textContent).toBe('world')
+      setTimeout(() => {
+        expect(vm.$el.textContent).toBe('world')
+        done()
+      })
+    })
+
   })
 
   it('Array push/slice', () => {
@@ -91,10 +108,16 @@ describe('MVVM', () => {
     expect(vm.$el.textContent).toBe('1')
 
     vm.a.push(2)
-    expect(vm.$el.textContent).toBe('2')
 
-    vm.a.splice(2, 0, '!!')
-    expect(vm.$el.textContent).toBe('!!')
+    setTimeout(() => {
+      expect(vm.$el.textContent).toBe('2')
+
+      vm.a.splice(2, 0, '!!')
+      setTimeout(() => {
+        expect(vm.$el.textContent).toBe('!!')
+      })
+    })
+
   })
 
   it('Change array item property', () => {
@@ -111,6 +134,8 @@ describe('MVVM', () => {
 
     vm.a[0].msg = 'world'
 
-    expect(vm.$el.textContent).toBe('world')
+    setTimeout(() => {
+      expect(vm.$el.textContent).toBe('world')
+    })
   })
 })
